@@ -1,0 +1,95 @@
+create database prueba character set utf8mb4 collate utf8mb4_spanish2_ci; 
+
+use prueba;
+
+create table if not exists prueba.proveedor (
+idProveedor INT not null primary key,
+Nombre VARCHAR(45) NOT NULL,
+telefono VARCHAR(45),
+Correo VARCHAR(45),
+Direccion VARCHAR(120),
+Paginaweb VARCHAR(45),
+Ciudad VARCHAR(45),
+Horarios VARCHAR(45)
+);
+
+create table if not exists prueba.categoria (
+idCategoria INT auto_increment primary key,
+Nombre VARCHAR(45) not null,
+Descripcion VARCHAR(45)
+);
+
+create table if not exists prueba.producto (
+idProducto int auto_increment primary key,
+Nombre_Producto varchar(45) not null,
+Precio_Venta DOUBLE,
+Cantidad INT,
+Proveedor INT,
+Categoria INT,
+Tipo_Producto BOOLEAN,
+costo_producto Double,
+idCategoria int not Null,
+idProveedor int not Null,
+index fk_catpro_indx (idCategoria asc),
+constraint fk_catpro 
+foreign key (idCategoria) 
+references prueba.categoria (idCategoria)
+on delete cascade 
+on update cascade
+);
+
+create table if not exists prueba.detalle_producto_proveedor (
+id int not null auto_increment primary key,
+idproducto int not null,
+idproveedor int not null,
+index fk_prodct_indx (idproducto asc),
+index fk_provee_indx (idproveedor asc),
+constraint fk_prov 
+foreign key (idProveedor) 
+references prueba.proveedor (idProveedor)
+on delete cascade 
+on update cascade,
+constraint fk_prod 
+foreign key (idproducto) 
+references prueba.producto (idProducto)
+on delete cascade 
+on update cascade
+);
+
+-- querry de pruebas
+
+drop database prueba;
+drop table categoria;			-- Elimina una tabla de una Base de datos
+drop table producto;
+drop table proveedor;
+
+show tables;
+show columns from producto;
+show columns from categoria;
+show columns from proveedor;
+show create table Producto;
+
+rename table Producto to producto; 				-- Modifica Nombre de Tabla
+
+alter table producto add costo_producto double; -- Crea mas columnas en la tabla
+alter table producto drop column categoria;		-- Elimina una Columna de una tabla
+alter table producto change correo mail varchar(60); -- modifica una columna
+
+-- relaciones entre tablas
+-- 1 a 1
+-- 1 a muchos 1 a N
+-- muchos a muchos - N a M
+-- Tener en cuenta las Restricciones de las tablas (restrict , cascade, set null, no action)
+
+alter table producto add idCategoria int not Null;
+alter table producto add constraint fk_catpro 
+foreign key (idCategoria) 
+references categoria (idCategoria)
+on delete cascade on update cascade;
+
+alter table producto add idProveedor int not Null;
+alter table producto add constraint fk_proveeproduct 
+foreign key (idProveedor) 
+references proveedor (idProveedor)
+on delete cascade on update cascade;
+
